@@ -10,7 +10,7 @@ List of R Scripts and their functions
 
 - "raster_correlations_check.R" ...... Identify correlations among predictor variables to avoid bias when running MaxEnt
 
-- "get_bioclim.R" ...... Download rasters of Bioclim variables for a specified extent (predictor variables)
+- "get_bioclim_newpackages.R" ...... Download rasters of Bioclim variables for a specified extent (predictor variables). This uses newer packages that aren't deprecated, and replaces "get_bioclim.R"
 
 - "get_isric.R" ...... Download rasters of ISRIC (International Soil Reference and Information Centre) data variables for a specified extent (predictor variables)
 

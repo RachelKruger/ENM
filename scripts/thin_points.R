@@ -17,7 +17,6 @@ input_lon <- read.csv("data/occurrence_data/lon_6-28-24_nodup_spThin.csv")
 ##you want for your data. Also change 'lat.col', 'long.col', and 'spec.col' to match your
 ##data
 
-
 thinned_cal <- thin(
   
   loc.data = input_cal, 

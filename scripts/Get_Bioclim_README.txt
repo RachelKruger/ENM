@@ -6,3 +6,4 @@ with your own data, and want to learn how to create a shapefile of a buffer arou
 your occurrence points, I am working on creating a tutorial for that in the free 
 software QGIS, but I'd be glad to help in the meantime. It's pretty quick and simple.
 
+

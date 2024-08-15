@@ -40,19 +40,7 @@ https://www.inaturalist.org/observations/export (You must have an account first 
 
 #### Enter information you want
 
-::: {layout-ncol="5"}
-![1]()
-
-![2]()
-
-![3]()
-
-![4]()
-
-![5]()
-:::
-
-These are the selections I usually make.
+There are many parameters you can choose, but the ones I think are important are choosing **Quality Grade: Research** and **Accuracy Below** whatever positional accuracy is relevant to your study system (I usually say below 1000m).
 
 ## 0.1 Select a geographic extent for the model
 
@@ -118,10 +106,6 @@ If you are only looking at one species, the scientific name isn't necessary. For
 
 ![](C:/Users/Rachel%20Kruger/OneDrive%20-%20Binghamton%20University/Documents/Binghamton%202023-2024/enm/enm/data/photos/10_save.jpg)
 
-```{r}
-
-```
-
 ## 1.0 Download bioclimatic variables
 
 Now for the fun part - downloading the variables! For this we will use the r package 'geodata'.
@@ -160,13 +144,13 @@ You will want this rough extent to be **larger** than your buffer extent because
 # lon=west point
 # lat=north point
 # path="directory you want to save")
-env1 <- worldclim_tile(var = "bio", lon=-123, lat=39.5, path = "data/pred_var/raw_bioclim")
+env1 <- worldclim_tile(var = "bio", lon=-123, lat=39.5, path = "C:/Users/Rachel Kruger/OneDrive - Binghamton University/Documents/Binghamton 2023-2024/enm/enm/data/pred_var/raw_bioclim")
 
-env2 <- worldclim_tile(var = "bio", lon=-113.5, lat=39.5, path = "data/pred_var/raw_bioclim")
+env2 <- worldclim_tile(var = "bio", lon=-113.5, lat=39.5, path = "C:/Users/Rachel Kruger/OneDrive - Binghamton University/Documents/Binghamton 2023-2024/enm/enm/data/pred_var/raw_bioclim")
 
-env3 <- worldclim_tile(var = "bio", lon=-123, lat=28.5, path = "data/pred_var/raw_bioclim")
+env3 <- worldclim_tile(var = "bio", lon=-123, lat=28.5, path = "C:/Users/Rachel Kruger/OneDrive - Binghamton University/Documents/Binghamton 2023-2024/enm/enm/data/pred_var/raw_bioclim")
 
-env4 <- worldclim_tile(var = "bio", lon=-113.5, lat=28.5, path = "data/pred_var/raw_bioclim")
+env4 <- worldclim_tile(var = "bio", lon=-113.5, lat=28.5, path = "C:/Users/Rachel Kruger/OneDrive - Binghamton University/Documents/Binghamton 2023-2024/enm/enm/data/pred_var/raw_bioclim")
 ```
 
 ### Merge tiles into a RasterStack
@@ -184,7 +168,7 @@ envall<-merge(env123, env4)
 Using **st_read** from the 'sf' package, we will read in the buffer shapefile we made for our exact model extent.
 
 ```{r}
-shapefile <- st_read("data/buffer/buffer_loncal_2deg_v1.shp")
+shapefile <- st_read("C:/Users/Rachel Kruger/OneDrive - Binghamton University/Documents/Binghamton 2023-2024/enm/enm/data/buffer/buffer_loncal_2deg_v1.shp")
 ```
 
 Next we will use **st_transform** also from 'sf' to transform the shapefile to make sure it's the same CRS as the **envall** object.
@@ -213,7 +197,7 @@ Now to write the 19 individual Bioclim rasters to files. You'll notice that we'v
 First, let's choose an output folder for the For Loop to write our final files to.
 
 ```{r}
-output_folder <- "data/pred_var/2deg_clip"
+output_folder <- "C:/Users/Rachel Kruger/OneDrive - Binghamton University/Documents/Binghamton 2023-2024/enm/enm/data/pred_var/2deg_clip"
 
 ```
 
@@ -269,25 +253,25 @@ ocd Organic carbon density
 ocs Organic carbon stocks - **not available for depth of 0-5cm**
 
 ```{r}
-bdod <- soil_world(var="bdod", depth=5, path='data/pred_var/raw_isric')
+bdod <- soil_world(var="bdod", depth=5, path='C:/Users/Rachel Kruger/OneDrive - Binghamton University/Documents/Binghamton 2023-2024/enm/enm/data/pred_var/raw_isric')
 
-cfvo <- soil_world(var="cfvo", depth=5, path='data/pred_var/raw_isric')
+cfvo <- soil_world(var="cfvo", depth=5, path='C:/Users/Rachel Kruger/OneDrive - Binghamton University/Documents/Binghamton 2023-2024/enm/enm/data/pred_var/raw_isric')
 
-clay <- soil_world(var="clay", depth=15, path='data/pred_var/raw_isric')
+clay <- soil_world(var="clay", depth=15, path='C:/Users/Rachel Kruger/OneDrive - Binghamton University/Documents/Binghamton 2023-2024/enm/enm/data/pred_var/raw_isric')
 
-nitrogen <- soil_world(var="nitrogen", depth=5, path='data/pred_var/raw_isric')
+nitrogen <- soil_world(var="nitrogen", depth=5, path='C:/Users/Rachel Kruger/OneDrive - Binghamton University/Documents/Binghamton 2023-2024/enm/enm/data/pred_var/raw_isric')
 
-ocd <- soil_world(var="ocd", depth=5, path='data/pred_var/raw_isric')
+ocd <- soil_world(var="ocd", depth=5, path='C:/Users/Rachel Kruger/OneDrive - Binghamton University/Documents/Binghamton 2023-2024/enm/enm/data/pred_var/raw_isric')
 
-phh2o <- soil_world(var="phh2o", depth=5, path='data/pred_var/raw_isric')
+phh2o <- soil_world(var="phh2o", depth=5, path='C:/Users/Rachel Kruger/OneDrive - Binghamton University/Documents/Binghamton 2023-2024/enm/enm/data/pred_var/raw_isric')
 
-sand <- soil_world(var="sand", depth=5, path='data/pred_var/raw_isric')
+sand <- soil_world(var="sand", depth=5, path='C:/Users/Rachel Kruger/OneDrive - Binghamton University/Documents/Binghamton 2023-2024/enm/enm/data/pred_var/raw_isric')
 
-silt <- soil_world(var="silt", depth=5, path='data/pred_var/raw_isric')
+silt <- soil_world(var="silt", depth=5, path='C:/Users/Rachel Kruger/OneDrive - Binghamton University/Documents/Binghamton 2023-2024/enm/enm/data/pred_var/raw_isric')
 
-soc <- soil_world(var="soc", depth=5, path='data/pred_var/raw_isric')
+soc <- soil_world(var="soc", depth=5, path='C:/Users/Rachel Kruger/OneDrive - Binghamton University/Documents/Binghamton 2023-2024/enm/enm/data/pred_var/raw_isric')
 
-elev <- elevation_30s(country = "USA", path = 'data/pred_var/raw_isric')
+elev <- elevation_30s(country = "USA", path = 'C:/Users/Rachel Kruger/OneDrive - Binghamton University/Documents/Binghamton 2023-2024/enm/enm/data/pred_var/raw_isric')
 ```
 
 ## 2.1 Crop ISRIC variables to your extent and write raster files
@@ -299,7 +283,7 @@ Now we will crop and mask each raster to the extent of the buffer.
 If you already have this in your environment, no need to load it in again.
 
 ```{r}
-shapefile <- st_read("data/buffer/buffer_loncal_2deg_v1.shp") 
+shapefile <- st_read("C:/Users/Rachel Kruger/OneDrive - Binghamton University/Documents/Binghamton 2023-2024/enm/enm/data/buffer/buffer_loncal_2deg_v1.shp") 
 
 ### Transform to be correct CRS
 shapefile <- st_transform(shapefile, crs = 4326)
@@ -316,30 +300,9 @@ mbdod <- mask(cbdod, shapefile)
 # Rasterize it
 b <- raster(mbdod)
 # Write the file in ascii format for MaxEnt
-writeRaster(b, filename = "data/pred_var/2deg_clip/bdod.asc", format="ascii", overwrite=T)
+writeRaster(b, filename = "C:/Users/Rachel Kruger/OneDrive - Binghamton University/Documents/Binghamton 2023-2024/enm/enm/data/pred_var/2deg_clip/bdod.asc", format="ascii", overwrite=T)
 ```
 
 ## 2.2 Write ISRIC rasters to files
 
 ## 3.0 Check for correlations among variables
-
-## Quarto
-
-Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
-
-## Running Code
-
-When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
-
-```{r}
-1 + 1
-```
-
-You can add options to executable code like this
-
-```{r}
-#| echo: false
-2 * 2
-```
-
-The `echo: false` option disables the printing of code (only output is displayed).
