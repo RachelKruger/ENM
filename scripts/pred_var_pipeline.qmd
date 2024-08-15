@@ -1,0 +1,345 @@
+---
+title: "Downloading Environmental Data for Niche Modeling"
+author: "Rachel F Kruger"
+format: html
+editor: visual
+---
+
+# Downloading Environmental Data for use with Niche Modeling
+
+This is a tutorial for how to download and format environmental data from WorldClim (bioclimatic variables) and ISRIC (International Soil Reference and Information Centre). Upon completion of this walkthrough, you will have rasters of environmental variables (or predictor variables, in the context of your model) that are ready to use with MaxEnt.
+
+The downloading and formatting requires multiple steps, including some preparation:
+
+0.0 Download occurrence data\
+0.1 Select a geographic extent for the model
+
+\
+1.0 Download bioclimatic variables\
+1.1 Crop bioclim rasters to your extent\
+1.2 Write bioclim rasters to files
+
+\
+2.0 Download ISRIC variables\
+2.1 Crop ISRIC variables to your extent\
+2.2 Write ISRIC rasters to files
+
+3.0 Check for correlations among variables\
+
+## 0.0 Download Occurrence Data
+
+You have multiple options for downloading species occurrences for your model. Do some research on what others in your study system have used, because certain databases are better than others for different species. For example, with my study system, monkeyflowers, using iNaturalist is the best way to get data because some of the herbarium specimens from GBIF (Global Biodiversity Information Facility) can be somewhat hard to reconcile with the current taxonomy.
+
+Here I will walk you through how to get species occurrence data via the iNaturalist website only. You can use the 'geodata' package we will be using later on to download gbif occurrences, but I will not cover that here.
+
+### Downloading iNaturalist Occurrences
+
+#### Go to the iNaturalist export website
+
+https://www.inaturalist.org/observations/export (You must have an account first - it's free and fun!)
+
+#### Enter information you want
+
+::: {layout-ncol="5"}
+![1]()
+
+![2]()
+
+![3]()
+
+![4]()
+
+![5]()
+:::
+
+These are the selections I usually make.
+
+## 0.1 Select a geographic extent for the model
+
+The geographic extent of your model is highly specific to your study system and model goals, so I won't get into what extent to pick. Here we'll assume you've already chosen an extent. In this case, we will assume a 2 degree buffer around all of your occurrences. We will create a shapefile that matches the extent of this buffer using QGIS, an openware (free) alternative to ArcGIS.
+
+### Download QGIS
+
+Here is the link to download QGIS for your platform.
+
+<https://qgis.org/en/site/forusers/alldownloads.html>
+
+For the purposes here, I recommend going with the Standalone installer - it's simpler and works for what we need to do. I tend to use the Long Term Release version, but again, we won't be doing anything highly complex, so the latest release will probably be fine.
+
+### Prepare your occurrence data files
+
+Don't tell Josh, but now you should make a copy of your occurrence data csv files that you downloaded, and remove all columns except **latitude**, **longitude**, and **scientific name**.
+
+If you are only looking at one species, the scientific name isn't necessary. For these purposes, I'll be showing you with two species so that you can see how to merge the occurrences to one vector.
+
+### Import your occurrence data files
+
+1.  Once you've opened QGIS in a new project, add your csv files by going to the top of the screen and selecting **Layer** \> **Add Layer** \> **Add Delimited Text Layer...**
+
+![](C:/Users/Rachel%20Kruger/OneDrive%20-%20Binghamton%20University/Documents/Binghamton%202023-2024/enm/enm/data/photos/add_csv.jpg)
+
+2.  Choose your file at the top "..." - make sure the **X** field says **longitude** and the **Y** field says **latitude**. Make sure the CRS is in the projection you want. Usually WGS 84 - ESPG:4326 is standard. Double-check at the bottom under **Sample Data** that the latitude, longitude, and anything else look correct. In this tutorial, I'm doing this twice for my two species.
+
+![](C:/Users/Rachel%20Kruger/OneDrive%20-%20Binghamton%20University/Documents/Binghamton%202023-2024/enm/enm/data/photos/2_load_csv.jpg)
+
+3.  Now we'll add a simple map to the background just to double check that the occurrence points (seen below) are projecting where you would expect them. Go to the little **globe with a +** \> **ESRI** \> **ESRI GRAY (light)** . You can use any map for these purposes. *Note - if you're using one species, you'll only see one color of points.*
+
+![](C:/Users/Rachel%20Kruger/OneDrive%20-%20Binghamton%20University/Documents/Binghamton%202023-2024/enm/enm/data/photos/3_add_map.jpg)
+
+4.  Once you've confirmed that the points are projecting over a map that looks correct, if you have two (or more) separate data occurrence files, we'll want to merge them. From the top, select **Processing** \> **Toolbox**.
+
+    *Note* - *If you only have one species and are following along with your own data, skip over to \# 7.*
+
+![](C:/Users/Rachel%20Kruger/OneDrive%20-%20Binghamton%20University/Documents/Binghamton%202023-2024/enm/enm/data/photos/4_toolbox.jpg)
+
+5.  Search **Merge vector layers** in the search box that pops up on the right, and select the **Merge vector layers** from the **Vector general** category.
+
+![](C:/Users/Rachel%20Kruger/OneDrive%20-%20Binghamton%20University/Documents/Binghamton%202023-2024/enm/enm/data/photos/5_merge_vector.jpg)
+
+6.  Select **input layer** at the top of the new window, and check all the layers you want to merge. In this case, I'm choosing both vectors of occurrence points from the two species. Select **OK** and then **Run**. Make sure the **Destination CRS** is what you want.
+
+![](C:/Users/Rachel%20Kruger/OneDrive%20-%20Binghamton%20University/Documents/Binghamton%202023-2024/enm/enm/data/photos/6_merge_files.jpg)
+
+7.  Now we will add the buffer layer around the points. Select **Vector** from the top \> **Geoprocessing Tools** \> **Buffer...**
+
+![](C:/Users/Rachel%20Kruger/OneDrive%20-%20Binghamton%20University/Documents/Binghamton%202023-2024/enm/enm/data/photos/7_buffer.jpg)
+
+8.  Select the **Input layer** as either the new **merged** layer we just created, or your occurrence points layer you imported. Under **Distance**, select the buffer degrees you want. I'm choosing a 2 degree buffer. Hit **Run**.
+
+![](C:/Users/Rachel%20Kruger/OneDrive%20-%20Binghamton%20University/Documents/Binghamton%202023-2024/enm/enm/data/photos/8_buffer_deg.jpg)
+
+9.  Now you have something that looks like this. You will see the layer titled **Buffered** in the **Layers** pane. Right-click that, and select **Export** \> **Save Features As...**
+
+![](C:/Users/Rachel%20Kruger/OneDrive%20-%20Binghamton%20University/Documents/Binghamton%202023-2024/enm/enm/data/photos/9_export.jpg)
+
+10. Save your layer as an **ESRI Shapefile** to whatever location you want. The shapefile itself will have a .shp extension, but multiple files with the same name, but different extensions will be created. You will need these, so **do not delete** the other files!
+
+    Again, confirm that the **CRS** is correct.
+
+![](C:/Users/Rachel%20Kruger/OneDrive%20-%20Binghamton%20University/Documents/Binghamton%202023-2024/enm/enm/data/photos/10_save.jpg)
+
+```{r}
+
+```
+
+## 1.0 Download bioclimatic variables
+
+Now for the fun part - downloading the variables! For this we will use the r package 'geodata'.
+
+## 1.1 Crop bioclim rasters to your extent
+
+As foreshadowed in section 0.1, you will need to make sure ALL of your buffer shapefile files are located in **one folder** together. Even though you will only call upon the .shp file, R needs all those files to be in the same location! The file extensions should be: **.cpg .dbf .prj .qmd .shp** and **.shx**
+
+### Load in Library
+
+These will be all the packages you'll need for the rest of this tutorial.
+
+```{r}
+# install.packages("sf")
+# install.packages("terra")
+# install.packages("raster")
+# install.packages("geodata")
+# install.packages("ENMTools")
+library(sf)
+library(terra)
+library(raster)
+library(geodata)
+library(ENMTools)
+```
+
+### Download climate tiles
+
+30 arc-second resolution is the finest resolution you can get for Bioclim variables. To get this, you need to download by tile. You will make one object for each corner of your rough extent. Northwest, Northeast, Southwest, Southeast.
+
+You will want this rough extent to be **larger** than your buffer extent because you will crop and mask the raster you get to the buffer extent later. So make sure you have your buffer extent **before** this.
+
+**worldclim_tile** from the 'geodata' package is the function to use for this. You can alternatively use **worldclim** to get data for an entire country or the globe.
+
+```{r}
+# env <- worldclim_tile(var = "bio" for bioclim data 
+# lon=west point
+# lat=north point
+# path="directory you want to save")
+env1 <- worldclim_tile(var = "bio", lon=-123, lat=39.5, path = "data/pred_var/raw_bioclim")
+
+env2 <- worldclim_tile(var = "bio", lon=-113.5, lat=39.5, path = "data/pred_var/raw_bioclim")
+
+env3 <- worldclim_tile(var = "bio", lon=-123, lat=28.5, path = "data/pred_var/raw_bioclim")
+
+env4 <- worldclim_tile(var = "bio", lon=-113.5, lat=28.5, path = "data/pred_var/raw_bioclim")
+```
+
+### Merge tiles into a RasterStack
+
+Using the **merge** function from the 'raster' package to merge the first two, then that one to the third, then that one to the fourth to create a RasterStack with the data for a square of the rough extent you specified.
+
+```{r}
+env12<-merge(env1, env2)
+env123<-merge(env12, env3)
+envall<-merge(env123, env4)
+```
+
+### Read in buffer Shapefile
+
+Using **st_read** from the 'sf' package, we will read in the buffer shapefile we made for our exact model extent.
+
+```{r}
+shapefile <- st_read("data/buffer/buffer_loncal_2deg_v1.shp")
+```
+
+Next we will use **st_transform** also from 'sf' to transform the shapefile to make sure it's the same CRS as the **envall** object.
+
+```{r}
+shapefile <- st_transform(shapefile, crs(envall))
+```
+
+### Crop the raster to the exact extent
+
+Now, we will use two functions from 'raster' to crop and then mask the raster extent of envall.
+
+```{r}
+# Crop to the maximum square extent of the shapefile's bound box
+cropped_raster <- crop(envall, extent(st_bbox(shapefile)))
+# Mask it so that it actually crops to the buffer shape rather than just the maximum bbox.
+Bio <- mask(cropped_raster, shapefile)
+```
+
+## 1.2 Write bioclim rasters to files
+
+Now to write the 19 individual Bioclim rasters to files. You'll notice that we've been working with a single RasterStack we named envall. This object contains all 19 layers of bioclim variables within it, so we'll use a For Loop to extract each one and write it to a file.
+
+### Select output folder
+
+First, let's choose an output folder for the For Loop to write our final files to.
+
+```{r}
+output_folder <- "data/pred_var/2deg_clip"
+
+```
+
+### Write files
+
+**writeRaster** is a 'terra' function that will write each layer with the correct name. As the loop iterates through, each layer in turn becomes "i". For the names, we will use the names from any of the rasterstacks we downloaded from worldclim.
+
+```{r}
+for (i in 1:nlyr(Bio)){
+  # 
+  output_filename <- file.path(output_folder, paste0(names(env1)[i], ".asc"))
+  writeRaster(Bio[[i]], filename = output_filename, overwrite=T)
+  
+  # This is to test for NA values - I'm still trying to figure this out, but it doesn't
+# change anything in the files, I don't think
+if (any(is.na(values(Bio[[i]]))) | any(!is.finite(values(Bio[[i]])))) {
+  warning(paste("Layer", names(env1)[i], "contains NA or non-finite values"))
+}
+
+# This will plot each Bioclim layer one at a time
+  plot(Bio[[i]], main = paste("Layer", names(env1)[i]))
+}
+```
+
+## 2.0 Download ISRIC variables
+
+### Download worldwide soil variables
+
+This uses the 'geodata' function **soil_world** to download soil variable data for the world. Use the function **elevation_30s** to download 30 arc-sec resolution elevation data.
+
+#### Variables and their descriptions, from the 'geodata' README
+
+bdod Bulk density of the fine earth fraction
+
+cec Cation Exchange Capacity of the soil - **Does not work**
+
+cfvo Vol. fraction of coarse fragments
+
+nitrogen Total nitrogen
+
+phh2o pH (H2O)
+
+sand Sand (\> 0.05 mm) in fine earth
+
+silt Silt (0.002-0.05 mm) in fine earth
+
+clay Clay (\< 0.002 mm) in fine earth
+
+soc Soil organic carbon in fine earth
+
+ocd Organic carbon density
+
+ocs Organic carbon stocks - **not available for depth of 0-5cm**
+
+```{r}
+bdod <- soil_world(var="bdod", depth=5, path='data/pred_var/raw_isric')
+
+cfvo <- soil_world(var="cfvo", depth=5, path='data/pred_var/raw_isric')
+
+clay <- soil_world(var="clay", depth=15, path='data/pred_var/raw_isric')
+
+nitrogen <- soil_world(var="nitrogen", depth=5, path='data/pred_var/raw_isric')
+
+ocd <- soil_world(var="ocd", depth=5, path='data/pred_var/raw_isric')
+
+phh2o <- soil_world(var="phh2o", depth=5, path='data/pred_var/raw_isric')
+
+sand <- soil_world(var="sand", depth=5, path='data/pred_var/raw_isric')
+
+silt <- soil_world(var="silt", depth=5, path='data/pred_var/raw_isric')
+
+soc <- soil_world(var="soc", depth=5, path='data/pred_var/raw_isric')
+
+elev <- elevation_30s(country = "USA", path = 'data/pred_var/raw_isric')
+```
+
+## 2.1 Crop ISRIC variables to your extent and write raster files
+
+Now we will crop and mask each raster to the extent of the buffer.
+
+### Load in shapefile
+
+If you already have this in your environment, no need to load it in again.
+
+```{r}
+shapefile <- st_read("data/buffer/buffer_loncal_2deg_v1.shp") 
+
+### Transform to be correct CRS
+shapefile <- st_transform(shapefile, crs = 4326)
+```
+
+### Crop, mask, and write files one variable at a time
+
+```{r}
+# Crop to bbox extent of shapefile
+cbdod <- crop(bdod, extent(st_bbox(shapefile)))
+# Mask it so that it actually crops to the buffer shape rather than just the maximum 
+# bbox or whatever
+mbdod <- mask(cbdod, shapefile)
+# Rasterize it
+b <- raster(mbdod)
+# Write the file in ascii format for MaxEnt
+writeRaster(b, filename = "data/pred_var/2deg_clip/bdod.asc", format="ascii", overwrite=T)
+```
+
+## 2.2 Write ISRIC rasters to files
+
+## 3.0 Check for correlations among variables
+
+## Quarto
+
+Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
+
+## Running Code
+
+When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
+
+```{r}
+1 + 1
+```
+
+You can add options to executable code like this
+
+```{r}
+#| echo: false
+2 * 2
+```
+
+The `echo: false` option disables the printing of code (only output is displayed).

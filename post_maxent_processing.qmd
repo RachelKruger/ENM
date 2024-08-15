@@ -1,0 +1,82 @@
+---
+title: "Post-Maxent Processing"
+author: "Rachel F Kruger"
+format: html
+editor: visual
+---
+
+# Converting Raster to Suitable/Unsuitable
+
+## Add layers
+
+-   Layer \> Add Layer \> Add Raster Layer...
+
+-   Under "Source..." Choose where your MaxEnt output files are located, and select "species_avg.asc" - "longiflorus_avg.asc" in this case.
+
+-   Do this again for second species
+
+## Convert rasters to binary 1,0
+
+-   Open "maxentResults.csv" in your MaxEnt output folder.
+
+    -   Search: "Equal" and find the column titled "Equal training sensitivity and specificity X threshold". X will be whatever output format you chose for MaxEnt. In this case it's "Cloglog"
+
+    -   Scroll to last row - this is where the average values are. Take note of that number. In this case it's 0.3165.
+
+    -   Do the same for calycinus
+
+-   In QGIS, choose Raster \> Raster Calculator...
+
+    -   Select the ... under Output layer, and choose the file name and location you would like to write the raster. We'll call it "lon_bin"
+
+    -   In the calculator box, type:\
+        ("longiflorus_avg\@1" \>= 0.3165) \* 1
+
+    -   This will make any value 0.3165 or above a 1, and the rest 0.
+
+    -   Do the same for calycinus.
+
+## Combine binary raster layers
+
+-   In QGIS, chose Raster \> Raster Calculator...
+
+    -   Select the ... under Output layer, and choose the file name and location you would like to write the raster.
+
+    -   In the calculator box, type:\
+        ("lon_bin\@1" = 0) \* ("cal_bin\@1" = 0) \* 0 +\
+        ("lon_bin\@1" = 1) \* ("cal_bin\@1" = 0) \* 1 +\
+        ("lon_bin\@1" = 0) \* ("cal_bin\@1" = 1) \* 2 +\
+        ("lon_bin\@1" = 1) \* ("cal_bin\@1" = 1) \* 3 +
+
+-   Right-click the new layer with the 4 different values (0-3)
+
+    -   Properties... \> Symbology
+
+    -   Click "Render Type" at the top, and select "Paletted/Unique values"
+
+    -   Click the green + symbol near the bottom until you have all the values
+
+    -   Relabel the "Labels" to say what they should
+
+    -   Click on the color squares to change the colors of each value
+
+## Quarto
+
+Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
+
+## Running Code
+
+When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
+
+```{r}
+1 + 1
+```
+
+You can add options to executable code like this
+
+```{r}
+#| echo: false
+2 * 2
+```
+
+The `echo: false` option disables the printing of code (only output is displayed).
